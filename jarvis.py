@@ -7,6 +7,8 @@ import random
 import wikipedia
 import webbrowser
 import smtplib
+import requests
+from bs4 import BeautifulSoup
 
 def speak(text):
     i = random.randint(0,10)
@@ -45,6 +47,14 @@ def sendEmail(to,msg):
     server.login('your id','password')
     server.sendmail('your id',to,msg)
     server.close()
+def curr_coronacase():
+    url = "https://www.worldometers.info/coronavirus/country/india/"
+    r = requests.get('https://www.worldometers.info/coronavirus/country/india/')
+    s = BeautifulSoup(r.text, "html.parser")
+    find = s.find_all('div', class_='maincounter-number')
+    print("CORONA VIRUS CASES IN INDIA:", find[0].span.string)
+    print("TOTAL DEATHS IN INDIA:", find[1].span.string)
+    print("RECOVERED IN INDIA:", find[2].span.string)
 
 if __name__ == "__main__":
     wishMe()
@@ -75,7 +85,7 @@ if __name__ == "__main__":
             print(date)
             print(strTime)
             speak(f"Sir the time is {strTime} and the date is {date}")
-        elif 'open code' in query:
+        elif 'open vs code' in query:
             path = "C:\\Users\\SHAKSHAM\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe"
             os.startfile(path)
         elif 'music' in query:
@@ -83,6 +93,8 @@ if __name__ == "__main__":
             songs= os.listdir(songsList)
             print(songsList)
             os.startfile(os.path.join(songsList,songs[random.randint(0,100)]))
+        elif "cases" in query:
+            curr_coronacase()
         elif 'email' in query:
             try:
                 print("What you want to send")
